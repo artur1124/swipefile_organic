@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 Advanced Video Swipe File v4 🚀</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6d28d9; /* Vibrant Purple */
+            --primary-hover: #5b21b6;
+            --secondary-color: #4b5563; /* Darker Gray */
+            --success-color: #10b981; /* Emerald Green */
+            --success-hover: #059669;
+            --danger-color: #ef4444; /* Red */
+            --danger-hover: #dc2626;
+            --info-color: #3b82f6; /* Blue */
+            --info-hover: #2563eb;
+            --warning-bg: #fef3c7; /* Lighter Yellow */
+            --warning-border: #fde68a;
+            --warning-text: #b45309;
+            --light-bg: #f9fafb; /* Very Light Gray */
+            --white: #fff;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --box-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif; line-height: 1.6; margin: 0; padding: 25px;
+            background-color: var(--light-bg); color: var(--gray-800); display: flex; flex-direction: column; align-items: center; font-size: 16px;
+        }
+        .container { background-color: var(--white); padding: 30px 40px; border-radius: var(--border-radius); box-shadow: var(--box-shadow-lg); width: 95%; max-width: 1200px; margin-bottom: 35px; text-align: center; }
+        h1, h2 { color: var(--gray-900); margin-bottom: 20px; text-align: center; font-weight: 700; }
+        h1 { font-size: 2.25rem; margin-bottom: 30px; }
+        h2 { font-size: 1.75rem; margin-top: 40px; border-bottom: 1px solid var(--gray-200); padding-bottom: 15px; font-weight: 600;}
+        /* Keep h3 small for form */
+        h3 { font-size: 1.15rem; margin-top: 20px; margin-bottom: 15px; text-align: left; font-weight: 600; display: flex; align-items: center; gap: 8px; color: var(--gray-800); }
+        h3.form-section-heading {
+            grid-column: 1 / -1; /* Make section headings span full width */
+            margin-top: 30px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--gray-200);
+            font-size: 1rem;
+            color: var(--primary-color);
+        }
+         h3.form-section-heading:first-of-type {
+             margin-top: 0; /* No top margin for the very first heading */
+             border-top: none;
+         }
+
+        .instructions { background-color: var(--warning-bg); border-left: 4px solid var(--warning-text); color: var(--warning-text); padding: 15px 20px; margin-bottom: 30px; border-radius: 4px; text-align: left; font-size: 0.95em; }
+        .instructions code { background-color: var(--gray-200); padding: 3px 6px; border-radius: 4px; font-family: monospace; color: var(--gray-700); }
+        .instructions strong { font-weight: 600; }
+
+        /* --- Input Area --- */
+        .input-area { display: flex; flex-direction: column; gap: 15px; margin-bottom: 40px; align-items: center; }
+        #embedCodeInput { width: 95%; max-width: 700px; min-height: 110px; padding: 12px 15px; border: 1px solid var(--gray-300); border-radius: var(--border-radius); font-size: 0.9rem; font-family: monospace; resize: vertical; transition: border-color 0.2s ease, box-shadow 0.2s ease; }
+        #embedCodeInput:focus { border-color: var(--primary-color); outline: none; box-shadow: 0 0 0 3px rgba(109, 40, 217, .2); }
+
+        /* --- Buttons --- */
+        .button { padding: 10px 20px; color: var(--white); border: none; border-radius: var(--border-radius); cursor: pointer; font-size: 0.95rem; font-weight: 500; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; justify-content: center; box-shadow: var(--box-shadow); }
+        .button:hover:not(:disabled) { transform: translateY(-2px); box-shadow: var(--box-shadow-lg); }
+        .button:active:not(:disabled) { transform: translateY(0px); box-shadow: var(--box-shadow); }
+        .button:disabled { background-color: var(--gray-300); cursor: not-allowed; transform: none; color: var(--gray-500); box-shadow: none; opacity: 0.7; }
+        .button-primary { background-color: var(--primary-color); }
+        .button-primary:hover:not(:disabled) { background-color: var(--primary-hover); }
+        .button-success { background-color: var(--success-color); }
+        .button-success:hover:not(:disabled) { background-color: var(--success-hover); }
+        .button-danger { background-color: var(--danger-color); }
+        .button-danger:hover:not(:disabled) { background-color: var(--danger-hover); }
+        .button-info { background-color: var(--info-color); }
+        .button-info:hover:not(:disabled) { background-color: var(--info-hover); }
+        .button-secondary { background-color: var(--secondary-color); }
+        .button-secondary:hover:not(:disabled) { background-color: var(--gray-700); }
+        .button-small { padding: 5px 10px; font-size: 0.85rem; gap: 4px; }
+
+
+        /* --- Results Area Layout --- */
+        .results-area { display: flex; flex-wrap: wrap; gap: 30px; margin-top: 30px; align-items: flex-start; width: 100%; }
+        .player-column { flex: 1 1 450px; min-width: 320px; display: flex; flex-direction: column; align-items: center; }
+        .form-and-analysis-column { flex: 1 1 550px; min-width: 400px; display: flex; flex-direction: column; gap: 30px; } /* Increased flex-basis */
+        #videoPlayerContainer { width: 100%; max-width: 480px; margin: 0 auto; min-height: 350px; background-color: var(--gray-100); border: 1px solid var(--gray-300); border-radius: var(--border-radius); display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; box-shadow: var(--box-shadow); }
+        #videoPlayerContainer p { color: var(--gray-500); font-style: italic; }
+        #videoPlayerContainer iframe, #videoPlayerContainer blockquote { margin: auto !important; max-width: 100% !important; }
+        #embedWarningMessage { background-color: var(--warning-bg); border: 1px solid var(--warning-border); color: var(--warning-text); margin-top: 15px; padding: 15px; border-radius: var(--border-radius); text-align: left; font-weight: normal; width: 100%; max-width: 480px; box-sizing: border-box; font-size: 0.9em; margin: 15px auto 0 auto; }
+
+        /* --- Metrics Form Grid Layout --- */
+        #metricsInputContainer, #analysisContainer { border: 1px solid var(--gray-200); padding: 25px 30px; border-radius: var(--border-radius); background-color: var(--white); width: 100%; box-sizing: border-box; box-shadow: var(--box-shadow); }
+        #metricsForm { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px 25px; } /* Adjusted minmax and gap */
+        .form-field { display: flex; flex-direction: column; }
+        .form-field-full-width { grid-column: 1 / -1; }
+        #metricsForm label { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; margin-top: 0; font-weight: 500; color: var(--gray-700); text-align: left; font-size: 0.9rem; }
+        #metricsForm label .emoji { font-size: 1em; line-height: 1; }
+        #metricsForm input[type="number"], #metricsForm input[type="text"], #metricsForm input[type="date"],
+        #metricsForm input[list], #metricsForm select, #metricsForm textarea {
+            width: 100%; padding: 9px 12px; border: 1px solid var(--gray-300); border-radius: var(--border-radius); margin-top: 0; font-size: 0.95rem; box-sizing: border-box; transition: border-color 0.2s ease, box-shadow 0.2s ease; background-color: var(--white); color: var(--gray-800);
+        }
+        #metricsForm input:focus, #metricsForm textarea:focus, #metricsForm select:focus, #metricsForm input[list]:focus { border-color: var(--primary-color); outline: none; box-shadow: 0 0 0 3px rgba(109, 40, 217, .2); }
+        #metricsForm textarea { min-height: 70px; resize: vertical; font-family: inherit; }
+        #metricsForm input[type=number]::-webkit-inner-spin-button, #metricsForm input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        #metricsForm input[type=number] { -moz-appearance: textfield; appearance: textfield; }
+        #metricsForm input[readonly] { background-color: var(--gray-100); cursor: default; } /* Changed cursor */
+        .form-actions { grid-column: 1 / -1; display: flex; justify-content: flex-end; margin-top: 25px;}
+
+        /* Styles for Checkbox Groups */
+        .checkbox-group {
+            display: flex; flex-wrap: wrap; gap: 8px 12px; /* Adjusted gap */
+            border: 1px solid var(--gray-200); border-radius: var(--border-radius); padding: 12px 15px; /* Adjusted padding */
+            margin-top: 5px; max-height: 150px; overflow-y: auto; background-color: var(--white);
+        }
+        .checkbox-group label {
+            display: inline-flex; align-items: center; background-color: var(--gray-100); padding: 5px 12px; /* Adjusted padding */
+            border-radius: 15px; cursor: pointer; transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+            font-size: 0.85rem; color: var(--gray-700); border: 1px solid var(--gray-200); margin-bottom: 0; /* Override form label margin */
+            font-weight: 400; /* Lighter weight for options */
+        }
+        .checkbox-group input[type="checkbox"] { margin-right: 6px; accent-color: var(--primary-color); width: 14px; height: 14px; }
+        .checkbox-group label:hover { background-color: var(--gray-200); border-color: var(--gray-300); }
+        /* Use :has pseudo-class for modern browsers to style checked label */
+        .checkbox-group label:has(input:checked) {
+             background-color: #e9d5ff; /* Light purple */
+             color: var(--primary-color);
+             border-color: var(--primary-color);
+             font-weight: 500;
+        }
+        /* Fallback for older browsers (optional, less clean) */
+        /* .checkbox-group input[type="checkbox"]:checked + span { font-weight: 500; } */
+        .other-input { margin-top: 8px; width: calc(100% - 24px); font-size: 0.9rem; padding: 6px 10px; }
+
+        /* --- Analysis Section --- */
+        #analysisContainer { margin-top: 0; /* Removed top margin as it's in column gap */ }
+        #analysisContainer h3 { margin-top: 0; border-bottom: 1px solid var(--gray-200); padding-bottom: 10px; font-size: 1.1rem; }
+        #analysisContainer p { font-size: 1rem; margin-bottom: 10px; text-align: left; color: var(--gray-700); }
+        #analysisContainer span { font-weight: 600; color: var(--primary-color); margin-left: 8px; font-size: 1.05em; }
+
+        /* --- Comparison Table Section --- */
+        #comparisonContainer { width: 100%; margin-top: 40px; border-top: 2px solid var(--gray-200); padding-top: 30px; }
+        #comparisonContainer h2 { border-bottom: none; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 10px;}
+        .comparison-controls { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 15px; margin-bottom: 25px; }
+        .filter-controls { display: flex; flex-wrap: wrap; gap: 15px; align-items: center; }
+        .filter-controls label { font-weight: 500; font-size: 0.9rem; color: var(--gray-600); }
+        .filter-controls select { padding: 8px 12px; border-radius: var(--border-radius); border: 1px solid var(--gray-300); background-color: var(--white); font-size: 0.9rem; cursor: pointer; min-width: 120px; }
+        .action-buttons { display: flex; gap: 10px; }
+
+        #comparisonTableContainer { overflow-x: auto; margin-bottom: 30px; border: 1px solid var(--gray-200); border-radius: var(--border-radius); box-shadow: var(--box-shadow); }
+        #comparisonTable { width: 100%; border-collapse: collapse; font-size: 0.88em; }
+        #comparisonTable th, #comparisonTable td { border-bottom: 1px solid var(--gray-200); padding: 12px 15px; text-align: left; vertical-align: middle; border-left: none; border-right: none; white-space: nowrap; }
+        #comparisonTable th { background-color: var(--gray-100); font-weight: 600; position: sticky; top: 0; z-index: 1; border-top: none; border-bottom-width: 2px; color: var(--gray-700); }
+        #comparisonTable td { background-color: var(--white); color: var(--gray-700); }
+        #comparisonTable tbody tr:nth-child(even) td { background-color: var(--gray-50); }
+        #comparisonTable tbody tr:hover td { background-color: #f0e7fc; }
+        #comparisonTable td.action-cell { width: 40px; padding: 8px 10px; text-align: center; white-space: nowrap;}
+        #comparisonTable td.title-cell { max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: normal; /* Allow wrap */ vertical-align: top; }
+        #comparisonTable td.username-cell { max-width: 150px; overflow: hidden; text-overflow: ellipsis; }
+        #comparisonTable td.tags-cell { max-width: 200px; white-space: normal; vertical-align: top; }
+        #comparisonTable td.multi-select-cell { max-width: 180px; white-space: normal; vertical-align: top; font-size: 0.9em; }
+        #comparisonTable .metric-cell { text-align: right; font-weight: 500; color: var(--gray-800); }
+        #comparisonTable .platform-cell { text-transform: capitalize; font-weight: 500; }
+        .tag-item { display: inline-block; background-color: var(--gray-200); color: var(--gray-700); padding: 2px 8px; border-radius: 12px; font-size: 0.85em; margin: 2px; white-space: nowrap; }
+
+
+        /* --- Modals (Summary & Details) --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(17, 24, 39, 0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0s linear 0.3s; padding: 20px; }
+        .modal-overlay.visible { opacity: 1; visibility: visible; transition: opacity 0.3s ease; }
+        .modal-content { background-color: var(--white); padding: 30px 40px; border-radius: var(--border-radius); box-shadow: var(--box-shadow-lg); max-width: 700px; /* Wider for details */ width: 95%; max-height: 90vh; overflow-y: auto; position: relative; transform: scale(0.95); transition: transform 0.3s ease; }
+        .modal-overlay.visible .modal-content { transform: scale(1); }
+        .modal-content h3 { margin-top: 0; text-align: center; margin-bottom: 25px; color: var(--primary-color); font-size: 1.5rem; }
+        .modal-content ul { list-style: none; padding: 0; margin: 0; }
+        .modal-content li { margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed var(--gray-200); line-height: 1.6; display: flex; flex-wrap: wrap; gap: 5px 15px; } /* Flex for better alignment */
+        .modal-content li:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0;}
+        .modal-content strong { color: var(--gray-800); display: inline-block; min-width: 150px; /* Adjusted width */ font-weight: 600; flex-shrink: 0; /* Prevent shrinking */ padding-right: 10px; /* Add some space */ }
+        .modal-content span, .modal-content pre { color: var(--gray-700); flex-grow: 1; /* Allow value to take space */ word-break: break-word; margin: 0; } /* Reset margin for span/pre */
+        .modal-content pre { background-color: var(--gray-50); padding: 8px 12px; border-radius: 4px; white-space: pre-wrap; /* Allow wrapping */ font-size: 0.9em; margin-top: 5px; } /* Styling for preformatted text */
+        .modal-content .entry-details { font-size: 0.9em; color: var(--gray-500); margin-left: 5px;}
+        .modal-close-btn { position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 1.8rem; line-height: 1; cursor: pointer; color: var(--gray-400); transition: color 0.2s ease; padding: 5px; z-index: 10; } /* Ensure button is on top */
+        .modal-close-btn:hover { color: var(--gray-700); }
+
+        /* --- General Messages --- */
+        .message { margin-top: 15px; text-align: center; font-weight: 500; padding: 12px 18px; border-radius: var(--border-radius); border: 1px solid transparent; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.95rem; }
+        .message-loading { color: var(--info-color); background-color: #e0f2fe; border-color: #bae6fd; }
+        .message-error { color: var(--danger-hover); background-color: #fee2e2; border-color: #fecaca; }
+        .message-save-status { margin-top: 10px; grid-column: 1 / -1; /* Ensure it spans grid */ }
+        .message-warning { color: var(--warning-text); background-color: var(--warning-bg); border-color: var(--warning-border); }
+        .hidden { display: none; }
+    </style>
+    <!-- Global Embed Scripts -->
+    <script async src="//www.instagram.com/embed.js"></script>
+    <!-- TikTok script loaded dynamically -->
+</head>
+<body>
+
+    <div class="container" id="mainAnalyzerContainer">
+        <h1>🚀 Advanced Video Swipe File v4 🚀</h1>
+        <div class="instructions">
+            <strong>💡 How To Use:</strong> Paste an <strong>Instagram/TikTok Video URL</strong> OR its <strong>HTML Embed Code</strong> below.<br>
+            <strong>🚨 Heads Up!</strong> Run via local HTTP<strong>S</strong> (<code>https://localhost...</code>) for TikTok embeds to work correctly.
+        </div>
+        <div class="input-area">
+            <textarea id="embedCodeInput" placeholder="Paste Video URL (Instagram/TikTok) or HTML Embed Code..." rows="5"></textarea>
+            <button id="processEmbedButton" class="button button-primary">▶️ Process Input</button>
+        </div>
+        <div id="loadingMessage" class="message message-loading hidden">⏳ Processing Input...</div>
+        <div id="errorMessage" class="message message-error hidden"></div>
+
+        <div id="resultsArea" class="results-area hidden">
+            <div class="player-column">
+                <div id="videoPlayerContainer"><p>Video player loads here...</p></div>
+                <div id="embedWarningMessage" class="hidden"></div>
+            </div>
+            <div class="form-and-analysis-column">
+                 <div id="metricsInputContainer">
+                    <form id="metricsForm">
+                        <!-- Hidden fields first -->
+                        <input type="hidden" id="currentVideoIdentifier" name="identifier">
+                        <input type="hidden" id="currentPlatform" name="platform">
+
+                        <!-- SECTION 1: Core Video Info -->
+                        <h3 class="form-section-heading"><span class="emoji">🎬</span> Core Video Info</h3>
+                        <div class="form-field form-field-full-width">
+                            <label for="titleInput"><span class="emoji"> T </span>Product Name / Title:</label>
+                            <input type="text" id="titleInput" name="title" placeholder="e.g., Viral UGC Ad Strategy">
+                        </div>
+                        <div class="form-field">
+                            <label for="platformDisplay"><span class="emoji">🌐</span>Platform:</label>
+                            <input type="text" id="platformDisplay" name="platformDisplay" readonly style="background-color: var(--gray-100); cursor: default;">
+                        </div>
+                         <div class="form-field">
+                            <label for="usernameInput"><span class="emoji">👤</span>Username:</label>
+                            <input type="text" id="usernameInput" name="username" placeholder="e.g., @viralcreator">
+                        </div>
+                        <div class="form-field">
+                            <label for="postDateInput"><span class="emoji">📅</span>Post Date (When):</label>
+                            <input type="date" id="postDateInput" name="postDate">
+                        </div>
+                        <div class="form-field">
+                            <label for="durationInput"><span class="emoji">⏱️</span>Length (Duration):</label>
+                            <input type="text" id="durationInput" name="duration" placeholder="e.g., 0:15">
+                        </div>
+                        <div class="form-field">
+                            <label for="clipsInput"><span class="emoji">✂️</span>Clips:</label>
+                            <input type="number" id="clipsInput" name="clips" min="0" placeholder="e.g., 5">
+                        </div>
+                         <div class="form-field form-field-full-width">
+                            <label for="nicheCheckboxes"><span class="emoji">🎯</span>Niche(s):</label>
+                            <div id="nicheCheckboxes" class="checkbox-group">
+                                <!-- Checkboxes generated by JS -->
+                            </div>
+                        </div>
+
+                        <!-- SECTION 2: Performance Metrics -->
+                        <h3 class="form-section-heading"><span class="emoji">📊</span> Performance Metrics</h3>
+                        <div class="form-field">
+                            <label for="viewsInput"><span class="emoji">👀</span>Views:</label>
+                            <input type="number" id="viewsInput" name="views" min="0" placeholder="e.g., 1500000">
+                        </div>
+                        <div class="form-field">
+                            <label for="likesInput"><span class="emoji">👍</span>Likes:</label>
+                            <input type="number" id="likesInput" name="likes" min="0" placeholder="e.g., 120000">
+                        </div>
+                        <div class="form-field">
+                            <label for="commentsInput"><span class="emoji">💬</span>Comments:</label>
+                            <input type="number" id="commentsInput" name="comments" min="0" placeholder="e.g., 3500">
+                        </div>
+                        <div class="form-field">
+                            <label for="sharesInput"><span class="emoji">🔗</span>Shares:</label>
+                            <input type="number" id="sharesInput" name="shares" min="0" placeholder="Optional">
+                        </div>
+                        <div class="form-field">
+                            <label for="savesInput"><span class="emoji">💾</span>Saves:</label>
+                            <input type="number" id="savesInput" name="saves" min="0" placeholder="Optional">
+                        </div>
+
+                         <!-- SECTION 3: Content Analysis -->
+                        <h3 class="form-section-heading"><span class="emoji">🔬</span> Content Analysis</h3>
+                         <div class="form-field form-field-full-width">
+                            <label for="visualHookInput"><span class="emoji">👁️</span>Visual Hook:</label>
+                            <textarea id="visualHookInput" name="visualHook" placeholder="What grabs attention visually first?"></textarea>
+                        </div>
+                         <div class="form-field form-field-full-width">
+                            <label for="textHookInput"><span class="emoji">✍️</span>Text Hook:</label>
+                            <textarea id="textHookInput" name="textHook" placeholder="First words spoken or text on screen?"></textarea>
+                        </div>
+                        <div class="form-field form-field-full-width">
+                            <label for="captionInput"><span class="emoji">📄</span>Caption:</label>
+                            <textarea id="captionInput" name="caption" placeholder="Paste or describe caption..."></textarea>
+                        </div>
+                         <div class="form-field form-field-full-width">
+                            <label for="tagsInput"><span class="emoji">🏷️</span>Tags / Hashtags:</label>
+                            <input type="text" id="tagsInput" name="tags" placeholder="Comma-separated, e.g., ugc, demo, #hashtag" list="tagsSuggestions">
+                            <datalist id="tagsSuggestions"></datalist>
+                        </div>
+                        <div class="form-field form-field-full-width">
+                            <label for="emotionCheckboxes"><span class="emoji">😊</span>Emotion(s) Evoked:</label>
+                            <div id="emotionCheckboxes" class="checkbox-group">
+                                <!-- Checkboxes generated by JS -->
+                            </div>
+                        </div>
+                         <div class="form-field">
+                            <label for="paceInput"><span class="emoji">🏃</span>Pace (1-5):</label>
+                            <select id="paceInput" name="pace">
+                                <option value="">Select Pace...</option>
+                                <option value="1">1 (Very Slow)</option>
+                                <option value="2">2 (Slow)</option>
+                                <option value="3">3 (Medium)</option>
+                                <option value="4">4 (Fast)</option>
+                                <option value="5">5 (Very Fast)</option>
+                            </select>
+                        </div>
+                        <div class="form-field form-field-full-width">
+                            <label for="typeCheckboxes"><span class="emoji">🎭</span>Type(s) of Video:</label>
+                            <div id="typeCheckboxes" class="checkbox-group">
+                                <!-- Checkboxes generated by JS -->
+                            </div>
+                        </div>
+                        <div class="form-field form-field-full-width">
+                            <label for="controversyInput"><span class="emoji">🔥</span>Controversy Used:</label>
+                            <textarea id="controversyInput" name="controversy" placeholder="Describe any controversial element (if any)"></textarea>
+                        </div>
+                        <div class="form-field form-field-full-width">
+                            <label for="mostCommentsInput"><span class="emoji">🗣️</span>Most Comments Say:</label>
+                            <textarea id="mostCommentsInput" name="mostComments" placeholder="Summarize common themes in comments..."></textarea>
+                        </div>
+
+                        <!-- SECTION 4: Production & Context -->
+                        <h3 class="form-section-heading"><span class="emoji">🛠️</span> Production & Context</h3>
+                        <div class="form-field">
+                            <label for="whereFilmedInput"><span class="emoji">📍</span>Where Filmed:</label>
+                             <input type="text" id="whereFilmedInput" name="whereFilmed" placeholder="e.g., Indoors, Kitchen, Outdoor Park, Studio">
+                        </div>
+                         <div class="form-field">
+                             <label for="audioInput"><span class="emoji">🎵</span>Audio Name/Link:</label>
+                             <input type="text" id="audioInput" name="audio" placeholder="Trending sound name or link">
+                         </div>
+                        <div class="form-field">
+                            <label for="recreateInput"><span class="emoji">🔁</span>Can I Recreate It?:</label>
+                            <select id="recreateInput" name="recreate">
+                                <option value="">Select...</option>
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                                <option value="maybe">Maybe / Partially</option>
+                            </select>
+                        </div>
+                        <div class="form-field">
+                            <label for="equipmentInput"><span class="emoji">💡</span>Special Equipment Needed:</label>
+                            <input type="text" id="equipmentInput" name="equipment" placeholder="e.g., Drone, Specific Lighting, Green Screen">
+                        </div>
+                        <div class="form-field form-field-full-width">
+                            <label for="similarInput"><span class="emoji">👯</span>Similar To [Link/Product]:</label>
+                            <input type="text" id="similarInput" name="similar" placeholder="Link to another saved video or product name">
+                        </div>
+                         <div class="form-field form-field-full-width">
+                            <label for="notesInput"><span class="emoji">📝</span>Other Notes:</label>
+                            <textarea id="notesInput" name="notes" placeholder="Any other observations..."></textarea>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="form-actions">
+                            <button type="button" id="saveDataButton" class="button button-success" disabled>✅ Save Data</button>
+                        </div>
+                        <div id="saveStatusMessage" class="message message-save-status hidden"></div>
+                    </form>
+                </div>
+
+                <div id="analysisContainer">
+                    <h3>📊 Performance Analysis</h3>
+                    <p>Engagement Rate: <span id="engagementRate">N/A</span></p>
+                    <p>Like Rate: <span id="likeRate">N/A</span></p>
+                    <p>Comment Rate: <span id="commentRate">N/A</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container hidden" id="comparisonContainer">
+         <h2>📚 Saved Videos Swipe File</h2>
+         <div class="comparison-controls">
+             <div class="filter-controls">
+                 <label for="platformFilter">Platform:</label>
+                 <select id="platformFilter"><option value="all">All</option><option value="instagram">Instagram</option><option value="tiktok">TikTok</option></select>
+                 <label for="tagFilter">Tag:</label>
+                 <select id="tagFilter"><option value="all">All Tags</option></select>
+                 <!-- Add Niche Filter Here if desired -->
+                 <!-- <label for="nicheFilter">Niche:</label>
+                 <select id="nicheFilter"><option value="all">All Niches</option></select> -->
+             </div>
+             <div class="action-buttons">
+                 <button id="showSummaryButton" class="button button-secondary hidden">🏆 Show Summary</button>
+                 <button id="exportCsvButton" class="button button-info hidden">📄 Export CSV</button>
+                 <button id="clearAllButton" class="button button-danger hidden">🗑️ Clear All</button>
+             </div>
+         </div>
+         <div id="comparisonTableContainer">
+            <p id="noSavedDataMessage">No videos saved yet. Process an embed or URL and save its data!</p>
+            <table id="comparisonTable" class="hidden">
+                <thead>
+                    <tr>
+                        <th class="action-cell">Details</th>
+                        <th>Platform</th>
+                        <th>Title / Product</th>
+                        <th>Username</th>
+                        <th>Post Date</th>
+                        <th class="metric-cell">Views</th>
+                        <th class="metric-cell">Likes</th>
+                        <th class="metric-cell">Comments</th>
+                        <th class="metric-cell">Eng. Rate (%)</th>
+                        <th>Niche(s)</th>
+                        <th>Type(s)</th>
+                        <th>Tags</th>
+                     </tr>
+                </thead>
+                <tbody id="comparisonTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Summary Modal -->
+    <div id="summaryModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <button id="modalCloseButton" class="modal-close-btn">×</button>
+            <h3>🏆 Performance Summary</h3>
+            <ul id="summaryList"><li>Loading summary...</li></ul>
+        </div>
+    </div>
+
+    <!-- Video Details Modal -->
+    <div id="videoDetailModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <button id="detailModalCloseButton" class="modal-close-btn">×</button>
+            <h3>👁️ Video Details</h3>
+            <ul id="videoDetailList"><li>Loading details...</li></ul>
+        </div>
+    </div>
+
+
+    <script>
+        // --- DOM Elements ---
+        let embedCodeInput, processEmbedButton, resultsArea, videoPlayerContainer, metricsInputContainer,
+            analysisContainer, loadingMessage, errorMessage, embedWarningMessage, metricsForm,
+            currentVideoIdentifierInput, currentPlatformInput, usernameInput, postDateInput, savesInput,
+            notesInput, viewsInput, likesInput, commentsInput, sharesInput, tagsInput, tagsSuggestionsList,
+            durationInput, clipsInput, saveDataButton, saveStatusMessage, engagementRateEl, likeRateEl,
+            commentRateEl, comparisonContainer, comparisonTableContainer, comparisonTable, comparisonTableBody,
+            noSavedDataMessage, exportCsvButton, clearAllButton, platformFilter, tagFilter, showSummaryButton,
+            summaryModal, summaryList, modalCloseButton,
+            // New Fields
+            titleInput, platformDisplay, nicheCheckboxes, nicheOtherInput, emotionCheckboxes,
+            emotionOtherInput, paceInput, typeCheckboxes, typeOtherInput, visualHookInput,
+            textHookInput, captionInput, controversyInput, mostCommentsInput, whereFilmedInput,
+            audioInput, recreateInput, equipmentInput, similarInput,
+            // Details Modal Elements
+            videoDetailModal, videoDetailList, detailModalCloseButton;
+
+
+        // --- State & Constants ---
+        const LOCAL_STORAGE_KEY = 'videoSwipeFileData_Embed_v4'; // Incremented version
+        let currentVideoData = null;
+        let saveTimeout = null;
+        let instagramCheckInterval = null;
+        const INSTAGRAM_CHECK_TIMEOUT = 5000;
+        const INSTAGRAM_CHECK_INTERVAL = 250;
+        let tiktokScriptLoaded = false;
+        let allSavedTags = new Set();
+        let allSavedNiches = new Set();
+        let allSavedEmotions = new Set();
+        let allSavedTypes = new Set();
+
+        // Predefined options for checkboxes (Combined & Sorted Unique)
+        const PREDEFINED_NICHES = [...new Set(['Cars', 'Couples/Relationships', 'Kitchen', 'Sport', 'House Decor', 'Toys/Games', 'Mom Life', 'Cartoon', 'Anime', 'TV Shows', 'School', 'Health', 'Pets', 'Religion', 'Gaming', 'Baby', 'Finance', 'Travel', 'Fashion', 'Beauty', 'Food', 'DIY', 'Tech', 'Education', 'Comedy', 'Dance', 'Skincare', 'SaaS', 'Fitness'])].sort((a,b) => a.localeCompare(b));
+        const PREDEFINED_EMOTIONS = [...new Set(['Funny', 'Inspiring', 'Sad', 'Angry', 'Surprising', 'Scary', 'Nostalgic', 'Cute', 'Satisfying', 'Cringe', 'Educational', 'Curiosity', 'FOMO', 'Relatable', 'Aesthetic', 'Motivational', 'Shocking'])].sort((a,b) => a.localeCompare(b));
+        const PREDEFINED_TYPES = [...new Set(['POV', 'Storytelling', 'Unboxing', 'ASMR', 'Tutorial', 'Review', 'Challenge', 'Skit/Comedy', 'Dance', 'Vlog', 'Educational', 'Listicle', 'Q&A', 'Behind the Scenes', 'Animation', 'Reaction', 'Product Demo', 'Interview', 'Time-lapse', 'Explainer'])].sort((a,b) => a.localeCompare(b));
+
+
+        // --- Wait for DOM Ready ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Assign DOM Elements
+            embedCodeInput = document.getElementById('embedCodeInput');
+            processEmbedButton = document.getElementById('processEmbedButton');
+            resultsArea = document.getElementById('resultsArea');
+            videoPlayerContainer = document.getElementById('videoPlayerContainer');
+            metricsInputContainer = document.getElementById('metricsInputContainer');
+            analysisContainer = document.getElementById('analysisContainer');
+            loadingMessage = document.getElementById('loadingMessage');
+            errorMessage = document.getElementById('errorMessage');
+            embedWarningMessage = document.getElementById('embedWarningMessage');
+            metricsForm = document.getElementById('metricsForm');
+            currentVideoIdentifierInput = document.getElementById('currentVideoIdentifier');
+            currentPlatformInput = document.getElementById('currentPlatform');
+            usernameInput = document.getElementById('usernameInput');
+            postDateInput = document.getElementById('postDateInput');
+            savesInput = document.getElementById('savesInput');
+            notesInput = document.getElementById('notesInput');
+            viewsInput = document.getElementById('viewsInput');
+            likesInput = document.getElementById('likesInput');
+            commentsInput = document.getElementById('commentsInput');
+            sharesInput = document.getElementById('sharesInput');
+            tagsInput = document.getElementById('tagsInput');
+            tagsSuggestionsList = document.getElementById('tagsSuggestions');
+            durationInput = document.getElementById('durationInput');
+            clipsInput = document.getElementById('clipsInput');
+            saveDataButton = document.getElementById('saveDataButton');
+            saveStatusMessage = document.getElementById('saveStatusMessage');
+            engagementRateEl = document.getElementById('engagementRate');
+            likeRateEl = document.getElementById('likeRate');
+            commentRateEl = document.getElementById('commentRate');
+            comparisonContainer = document.getElementById('comparisonContainer');
+            comparisonTableContainer = document.getElementById('comparisonTableContainer');
+            comparisonTable = document.getElementById('comparisonTable');
+            comparisonTableBody = document.getElementById('comparisonTableBody');
+            noSavedDataMessage = document.getElementById('noSavedDataMessage');
+            exportCsvButton = document.getElementById('exportCsvButton');
+            clearAllButton = document.getElementById('clearAllButton');
+            platformFilter = document.getElementById('platformFilter');
+            tagFilter = document.getElementById('tagFilter');
+            showSummaryButton = document.getElementById('showSummaryButton');
+            summaryModal = document.getElementById('summaryModal');
+            summaryList = document.getElementById('summaryList');
+            modalCloseButton = document.getElementById('modalCloseButton');
+            // New Fields
+            titleInput = document.getElementById('titleInput');
+            platformDisplay = document.getElementById('platformDisplay');
+            nicheCheckboxes = document.getElementById('nicheCheckboxes');
+            nicheOtherInput = document.getElementById('nicheOtherInput');
+            emotionCheckboxes = document.getElementById('emotionCheckboxes');
+            emotionOtherInput = document.getElementById('emotionOtherInput');
+            paceInput = document.getElementById('paceInput');
+            typeCheckboxes = document.getElementById('typeCheckboxes');
+            typeOtherInput = document.getElementById('typeOtherInput');
+            visualHookInput = document.getElementById('visualHookInput');
+            textHookInput = document.getElementById('textHookInput');
+            captionInput = document.getElementById('captionInput');
+            controversyInput = document.getElementById('controversyInput');
+            mostCommentsInput = document.getElementById('mostCommentsInput');
+            whereFilmedInput = document.getElementById('whereFilmedInput');
+            audioInput = document.getElementById('audioInput');
+            recreateInput = document.getElementById('recreateInput');
+            equipmentInput = document.getElementById('equipmentInput');
+            similarInput = document.getElementById('similarInput');
+            // Details Modal Elements
+            videoDetailModal = document.getElementById('videoDetailModal');
+            videoDetailList = document.getElementById('videoDetailList');
+            detailModalCloseButton = document.getElementById('detailModalCloseButton');
+
+            // Attach Event Listeners (Add null checks for safety)
+            if(processEmbedButton) processEmbedButton.addEventListener('click', handleProcessInput);
+            if(metricsForm) metricsForm.addEventListener('input', handleMetricsInput);
+            if(saveDataButton) saveDataButton.addEventListener('click', saveDataForComparison);
+            if(exportCsvButton) exportCsvButton.addEventListener('click', exportDataToCsv);
+            if(clearAllButton) clearAllButton.addEventListener('click', clearAllSavedData);
+            if(platformFilter) platformFilter.addEventListener('change', loadComparisonData);
+            if(tagFilter) tagFilter.addEventListener('change', loadComparisonData);
+            if(showSummaryButton) showSummaryButton.addEventListener('click', displaySummary);
+            if(modalCloseButton) modalCloseButton.addEventListener('click', closeSummaryModal);
+            if(summaryModal) summaryModal.addEventListener('click', (event) => { if (event.target === summaryModal) closeSummaryModal(); });
+             if(comparisonTableBody) {
+                comparisonTableBody.addEventListener('click', (event) => {
+                    const button = event.target.closest('.view-details-btn');
+                    if (button) { displayVideoDetails(button.dataset.identifier); }
+                 });
+             }
+            if (detailModalCloseButton) detailModalCloseButton.addEventListener('click', closeDetailModal);
+            if (videoDetailModal) videoDetailModal.addEventListener('click', (event) => { if (event.target === videoDetailModal) closeDetailModal(); });
+
+            // Initial Setup
+             if (window.location.protocol !== 'https:') { showError("🚨 Warning: Run via local HTTP<strong>S</strong> (<code>https://localhost...</code>) for best results, especially for TikTok.", false); }
+            loadComparisonData(); // Load data first to populate sets
+            populateCheckboxGroupsWithSaved(); // Populate checkboxes using sets
+            updateAllSuggestions(); // Populate tag datalist etc.
+        });
+
+
+        // --- Checkbox Group Population ---
+        function populateCheckboxGroup(containerElement, optionsArray, groupName) {
+             if (!containerElement) return;
+             containerElement.innerHTML = '';
+             const sortedOptions = [...new Set(optionsArray)].sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())); // Ensure unique & sort
+             sortedOptions.forEach(option => {
+                 if (typeof option !== 'string' || !option.trim()) return; // Skip empty/invalid options
+                 const displayOption = escapeHtml(option.trim());
+                 const label = document.createElement('label');
+                 const checkbox = document.createElement('input');
+                 checkbox.type = 'checkbox'; checkbox.name = groupName; checkbox.value = displayOption; // Store display value
+                 const span = document.createElement('span'); span.textContent = ` ${displayOption}`;
+                 label.appendChild(checkbox); label.appendChild(span); containerElement.appendChild(label);
+             });
+         }
+         function populateCheckboxGroupsWithSaved() {
+             const combinedNiches = Array.from(new Set([...PREDEFINED_NICHES, ...allSavedNiches]));
+             const combinedEmotions = Array.from(new Set([...PREDEFINED_EMOTIONS, ...allSavedEmotions]));
+             const combinedTypes = Array.from(new Set([...PREDEFINED_TYPES, ...allSavedTypes]));
+             populateCheckboxGroup(nicheCheckboxes, combinedNiches, 'niche');
+             populateCheckboxGroup(emotionCheckboxes, combinedEmotions, 'emotion');
+             populateCheckboxGroup(typeCheckboxes, combinedTypes, 'type');
+             // Re-check boxes for currently loaded video if applicable
+             if (currentVideoData?.identifier) {
+                const saved = getSavedData()[currentVideoData.identifier];
+                if (saved) {
+                    setCheckboxValues('niche', saved.niches || []);
+                    setCheckboxValues('emotion', saved.emotions || []);
+                    setCheckboxValues('type', saved.types || []);
+                }
+             }
+         }
+         function getSelectedCheckboxValues(groupName) {
+             if (!metricsForm) return [];
+             const checkboxes = metricsForm.querySelectorAll(`input[name="${groupName}"]:checked`);
+             return Array.from(checkboxes).map(cb => cb.value); // Return the value (display text)
+         }
+         function setCheckboxValues(groupName, valuesToSelect) {
+             if (!metricsForm || !valuesToSelect || !Array.isArray(valuesToSelect)) return;
+             metricsForm.querySelectorAll(`input[name="${groupName}"]`).forEach(checkbox => {
+                 checkbox.checked = valuesToSelect.includes(checkbox.value);
+             });
+         }
+
+        // --- Number Formatting ---
+        function formatNumberShorthand(num) { num = Number(num); if (num === null || num === undefined || isNaN(num)) return 'N/A'; if (num === 0) return '0'; const absNum = Math.abs(num); let formattedNum; if (absNum >= 1e6) { formattedNum = (num / 1e6).toFixed(1).replace(/\.0$/, '') + 'M'; } else if (absNum >= 1e3) { formattedNum = (num / 1e3).toFixed(1).replace(/\.0$/, '') + 'k'; } else { formattedNum = num.toString(); } return formattedNum; }
+        function formatNumberWithCommas(num) { num = Number(num); if (num === null || num === undefined || isNaN(num)) return 'N/A'; return num.toLocaleString(); }
+
+        // --- Main Input Handler ---
+        function handleProcessInput() {
+            const input = embedCodeInput.value.trim(); resetUIBeforeFetch();
+            if (!input) { showError("Please paste embed code or a valid video URL."); return; }
+            showLoading(true);
+            try {
+                if (/^<blockquote/i.test(input)) { processAsEmbed(input); }
+                else if (input.includes('instagram.com/p/') || input.includes('instagram.com/reel/')) { processAsUrl(input, 'instagram'); }
+                else if (input.includes('tiktok.com/') && input.includes('/video/')) { processAsUrl(input, 'tiktok'); }
+                else { throw new Error("Input not recognized as embed code or a supported video URL."); }
+                if (currentVideoData?.identifier) { loadMetricsForCurrentVideo(currentVideoData.identifier); resultsArea.classList.remove('hidden'); if(saveDataButton) saveDataButton.disabled = false; }
+                else { throw new Error("Processing failed to set video data."); }
+            } catch (error) { console.error("Processing Error:", error); showError(`Error processing input: ${error.message}`); }
+            finally { showLoading(false); }
+        }
+
+        // --- Embed/URL Processing ---
+        function processAsEmbed(embedCode) {
+             let platform = null, identifier = null, processedEmbedCode = embedCode.replace(/<script.*?>.*?<\/script>/gis, '');
+             const tempDiv = document.createElement('div'); tempDiv.innerHTML = processedEmbedCode; const blockquote = tempDiv.querySelector('blockquote');
+             if (!blockquote) throw new Error("No valid <blockquote> element found.");
+             if (blockquote.classList.contains('instagram-media')) { platform = 'instagram'; identifier = blockquote.dataset.instgrmPermalink; if (!identifier) throw new Error("Could not find Instagram permalink."); }
+             else if (blockquote.classList.contains('tiktok-embed')) { platform = 'tiktok'; identifier = blockquote.dataset.videoId || blockquote.getAttribute('data-video-id') || citeUrl?.match(/\/video\/(\d+)/)?.[1]; if (!identifier) throw new Error("Could not find TikTok video ID."); }
+             else { throw new Error("Embed code not recognized."); }
+             setCurrentVideoData(platform, identifier, processedEmbedCode);
+             displayVideo(platform, processedEmbedCode);
+        }
+        function processAsUrl(url, detectedPlatform) {
+             let platform = detectedPlatform, identifier = null, generatedEmbedHtml = '';
+             if (platform === 'instagram') { if (!url.match(/instagram\.com\/(p|reel)\//)) throw new Error("Invalid Instagram URL format."); identifier = url.split("?")[0]; generatedEmbedHtml = `<blockquote class="instagram-media" data-instgrm-permalink="${escapeHtml(identifier)}" data-instgrm-version="14" style=" background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin: 1px; max-width:540px; min-width:326px; padding:0; width:99.375%; width:-webkit-calc(100% - 2px); width:calc(100% - 2px);"></blockquote>`; }
+             else if (platform === 'tiktok') { const match = url.match(/\/video\/(\d+)/); if (!match || !match[1]) throw new Error("Could not extract video ID from TikTok URL."); identifier = match[1]; generatedEmbedHtml = `<blockquote class="tiktok-embed" cite="${escapeHtml(url)}" data-video-id="${escapeHtml(identifier)}" style="max-width: 605px;min-width: 325px;" ><section> <a target="_blank" title="Video on TikTok" href="${escapeHtml(url)}">Watch video on TikTok</a> </section></blockquote>`; }
+             else { throw new Error("Unsupported platform URL."); }
+             setCurrentVideoData(platform, identifier, generatedEmbedHtml);
+             displayVideo(platform, generatedEmbedHtml);
+        }
+        function setCurrentVideoData(platform, identifier, embedCode) {
+             currentVideoData = { platform, identifier, originalEmbedCode: embedCode };
+             if(currentVideoIdentifierInput) currentVideoIdentifierInput.value = identifier;
+             if(currentPlatformInput) currentPlatformInput.value = platform;
+             if(platformDisplay) platformDisplay.value = platform || 'N/A';
+        }
+
+        // --- Video Display & Platform Script Handling ---
+        function displayVideo(platform, embedHtml) { if(!videoPlayerContainer || !embedWarningMessage) return; videoPlayerContainer.innerHTML = ''; embedWarningMessage.classList.add('hidden'); console.log(`Displaying ${platform} embed.`); videoPlayerContainer.innerHTML = embedHtml; if (platform === 'instagram') { if (window.instgrm?.Embeds) { console.log("Calling existing instgrm.Embeds.process()..."); try { window.instgrm.Embeds.process(); setTimeout(() => { if (!videoPlayerContainer.querySelector("iframe.instagram-media")) { console.warn("IG may not have rendered."); showEmbedWarning(`IG video didn't render. Check console/extensions/reload.`); } else { console.log("IG render check passed."); } }, 1500); } catch (e) { console.error("IG process err:", e); showEmbedWarning(`Error processing IG embed: ${e.message}.`); } } else { console.warn("IG script not ready. Starting checker."); waitForInstagramAndProcess(Date.now()); } } else if (platform === 'tiktok') { if (tiktokScriptLoaded && window.tiktokEmbed?.render) { console.log("TT script loaded. Attempting re-render."); try { setTimeout(() => { console.log("Calling tiktokEmbed.render() for new content..."); window.tiktokEmbed.render(); checkTikTokRenderStatus(2000); }, 50); } catch (e) { console.error("TT render err:", e); showEmbedWarning(`Error re-rendering TT: ${e.message}`); checkTikTokRenderStatus(3000); } } else if (tiktokScriptLoaded) { console.warn("TT script loaded but render() unavailable?"); checkTikTokRenderStatus(3000); } else { console.log("TT script not loaded. Loading now..."); loadTikTokScriptIfNeededAndCheck(); } } }
+        function loadTikTokScriptIfNeededAndCheck() { if (document.querySelector('script[src*="tiktok.com/embed.js"]') && !tiktokScriptLoaded) { console.log("TT script tag exists but flag not set, waiting..."); setTimeout(() => { if (!tiktokScriptLoaded) { console.warn("TT script stuck? Retrying check."); checkTikTokRenderStatus(3000); } } , 2000); return; } if (tiktokScriptLoaded) { console.log("TT script already loaded. Triggering check/render."); if (window.tiktokEmbed?.render) { console.log("Attempting render() call again."); try { window.tiktokEmbed.render(); } catch(e) { console.warn("Subsequent render() err:", e)} } checkTikTokRenderStatus(2000); return; } console.log("Loading TT embed.js dynamically..."); const script = document.createElement('script'); script.src = 'https://www.tiktok.com/embed.js'; script.async = true; script.onload = () => { console.log("TT embed.js loaded via onload."); tiktokScriptLoaded = true; if(window.tiktokEmbed?.render) { try { console.log("Calling tiktokEmbed.render() post-load..."); window.tiktokEmbed.render(); } catch(e) { console.error("Error calling render() post-load:", e); } } else { console.warn("render() not found post-load."); } checkTikTokRenderStatus(1500); }; script.onerror = () => { console.error("Failed to load TT embed.js."); tiktokScriptLoaded = false; showEmbedWarning(`Failed to load TikTok script. Check network/console/extensions. Use HTTPS.`); }; document.head.appendChild(script); }
+        function checkTikTokRenderStatus(delay) { console.log(`Scheduling TT check (${delay}ms)`); setTimeout(() => { if(!videoPlayerContainer) return; const iframe = videoPlayerContainer.querySelector(".tiktok-embed iframe"); const blockquoteExists = videoPlayerContainer.querySelector(".tiktok-embed"); if (iframe) { console.log(`✅ TT iframe found.`); if(!embedWarningMessage.classList.contains('hidden') && embedWarningMessage.textContent.includes('TikTok')) { embedWarningMessage.classList.add('hidden'); } } else if(blockquoteExists) { console.warn(`❌ TT iframe *not* found, blockquote exists.`); showEmbedWarning(`TT video didn't fully render (no iframe). Issues: HTTP? Extensions? Network? Check console.`); } else { console.warn(`❌ TT blockquote seems missing.`); } }, delay); }
+        function waitForInstagramAndProcess(startTime) { if (instagramCheckInterval) clearInterval(instagramCheckInterval); instagramCheckInterval = setInterval(() => { const igEmbeds = window.instgrm?.Embeds; if (igEmbeds) { clearInterval(instagramCheckInterval); console.log("IG script ready. Calling process()."); try { igEmbeds.process(); setTimeout(() => { if (videoPlayerContainer && !videoPlayerContainer.querySelector("iframe.instagram-media")) { console.warn("IG process() called, but iframe not found."); showEmbedWarning(`IG video didn't render. Reload via HTTPS & disable extensions.`); } else { console.log("IG embed seems rendered."); } }, 1000); } catch (e) { console.error("Error calling IG process():", e); showEmbedWarning(`Error processing IG embed: ${e.message}.`); } } else if (Date.now() - startTime > INSTAGRAM_CHECK_TIMEOUT) { clearInterval(instagramCheckInterval); console.error("IG script timeout."); showEmbedWarning(`Could not load IG script. Use HTTPS & disable extensions.`); } }, INSTAGRAM_CHECK_INTERVAL); }
+
+        // --- Metrics Input & Calculation ---
+        function handleMetricsInput(event) { calculateMetrics(); saveMetricsToLocalStorageDebounced(); }
+        function calculateMetrics(views = null, likes = null, comments = null) { const v = views ?? parseInt(viewsInput?.value || 0, 10); const l = likes ?? parseInt(likesInput?.value || 0, 10); const c = comments ?? parseInt(commentsInput?.value || 0, 10); let engRate=0, likeRate=0, commentRate=0, engStr="N/A", likeStr="N/A", commentStr="N/A"; if(v>0){ engRate=((l+c)/v)*100; likeRate=(l/v)*100; commentRate=(c/v)*100; engStr=engRate.toFixed(2)+'%'; likeStr=likeRate.toFixed(2)+'%'; commentStr=commentRate.toFixed(2)+'%'; } else if(l>0||c>0){ engStr=likeStr=commentStr="Enter Views"; } if(views===null && engagementRateEl && likeRateEl && commentRateEl){ engagementRateEl.textContent=engStr; likeRateEl.textContent=likeStr; commentRateEl.textContent=commentStr; } return { views:v, likes:l, comments:c, engagementRate:v>0?engRate:0, likeRate:v>0?likeRate:0, commentRate:v>0?commentRate:0 }; }
+
+        // --- Data Saving & Loading ---
+        function getSavedData() { try { const d = localStorage.getItem(LOCAL_STORAGE_KEY); return d ? JSON.parse(d) : {}; } catch (e) { console.error("LS Read Err:", e); return {}; } }
+        function saveAllData(data) { try { localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data)); } catch (e) { console.error("LS Write Err:", e); showError("Could not save data.", true); } }
+        function loadMetricsForCurrentVideo(identifier) {
+            if (!identifier || !metricsForm) return;
+            const allData = getSavedData(); const saved = allData[identifier];
+            metricsForm.reset(); setCheckboxValues('niche', []); setCheckboxValues('emotion', []); setCheckboxValues('type', []); // Reset first
+            setCurrentVideoData(currentVideoData?.platform, identifier, currentVideoData?.originalEmbedCode); // Set hidden fields + display platform
+
+            if (saved) {
+                console.log(`Loading saved: ${identifier}`);
+                // Assign values safely
+                Object.keys(saved).forEach(key => {
+                    const input = metricsForm.elements[key];
+                    if (input && input.type !== 'checkbox' && input.type !== 'hidden' && key !== 'platform') { // Handle standard inputs
+                         if(input.type === 'radio') { // Handle radio buttons if added later
+                              const radioToSelect = metricsForm.querySelector(`input[name="${key}"][value="${saved[key]}"]`);
+                              if (radioToSelect) radioToSelect.checked = true;
+                         } else {
+                              input.value = saved[key] ?? ''; // Use nullish coalescing
+                         }
+                    } else if (key === 'tags' && tagsInput) { // Handle tags specifically
+                        tagsInput.value = Array.isArray(saved.tags) ? saved.tags.join(', ') : (saved.tags || '');
+                    }
+                });
+                // Set checkboxes
+                setCheckboxValues('niche', saved.niches || []); setCheckboxValues('emotion', saved.emotions || []); setCheckboxValues('type', saved.types || []);
+                // Update suggestion sets
+                const safeAddToSet = (set, items) => (items || []).forEach(item => { if(typeof item === 'string' && item.trim()) set.add(item.trim()) });
+                safeAddToSet(allSavedNiches, saved.niches); safeAddToSet(allSavedEmotions, saved.emotions); safeAddToSet(allSavedTypes, saved.types); safeAddToSet(allSavedTags, saved.tags);
+            } else { console.log(`No saved data for: ${identifier}.`); }
+            calculateMetrics(); updateAllSuggestions(); // Update analysis & suggestions
+        }
+        function saveMetricsToLocalStorageDebounced() {
+            if (!currentVideoData?.identifier || !metricsForm) return; clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => {
+                const allData = getSavedData(); const identifier = currentVideoData.identifier; const metrics = gatherFormData(); if (!metrics) return;
+                allData[identifier] = { ...(allData[identifier] || {}), ...metrics }; saveAllData(allData);
+                const safeAddToSet = (set, items) => (items || []).forEach(item => { if(typeof item === 'string' && item.trim()) set.add(item.trim()) });
+                safeAddToSet(allSavedNiches, metrics.niches); safeAddToSet(allSavedEmotions, metrics.emotions); safeAddToSet(allSavedTypes, metrics.types); safeAddToSet(allSavedTags, metrics.tags);
+                updateAllSuggestions(); console.log(`Autosaved: ${identifier}`);
+            }, 800);
+        }
+        function saveDataForComparison() {
+            if (!currentVideoData?.identifier || !metricsForm) { showSaveStatus("No video processed.", true); return; } clearTimeout(saveTimeout);
+            const allData = getSavedData(); const identifier = currentVideoData.identifier; const metrics = gatherFormData(); if (!metrics) return;
+            if (!metrics.title && !metrics.views && !metrics.likes && !metrics.comments) { showSaveStatus("Please enter Title or Metrics to save.", true); return; }
+            allData[identifier] = metrics; saveAllData(allData); // Overwrite with current form
+            const safeAddToSet = (set, items) => (items || []).forEach(item => { if(typeof item === 'string' && item.trim()) set.add(item.trim()) });
+            safeAddToSet(allSavedNiches, metrics.niches); safeAddToSet(allSavedEmotions, metrics.emotions); safeAddToSet(allSavedTypes, metrics.types); safeAddToSet(allSavedTags, metrics.tags);
+            showSaveStatus(`Data saved for ${identifier}!`, false); loadComparisonData(); updateAllSuggestions();
+        }
+        function gatherFormData() {
+             if (!metricsForm || !currentVideoData) return null;
+             const formData = new FormData(metricsForm); // Easier way to get most values
+             const data = Object.fromEntries(formData.entries()); // Convert FormData to object
+
+             // Manually handle checkboxes and number conversions, hidden fields
+             data.platform = currentVideoData.platform; data.identifier = currentVideoData.identifier;
+             data.views = parseInt(data.views || 0, 10); data.likes = parseInt(data.likes || 0, 10); data.comments = parseInt(data.comments || 0, 10); data.shares = parseInt(data.shares || 0, 10); data.saves = parseInt(data.saves || 0, 10); data.clips = parseInt(data.clips || 0, 10);
+             data.tags = tagsInput.value.split(',').map(t => t.trim()).filter(Boolean); // Get tags from input, store as array
+             data.niches = getSelectedCheckboxValues('niche'); data.emotions = getSelectedCheckboxValues('emotion'); data.types = getSelectedCheckboxValues('type');
+             // Remove the platformDisplay field if it got included by FormData
+             delete data.platformDisplay;
+             // Trim relevant string fields (optional, depends on preference)
+             ['title', 'username', 'duration', 'visualHook', 'textHook', 'caption', 'controversy', 'mostComments', 'whereFilmed', 'audio', 'equipment', 'similar', 'notes']
+                 .forEach(key => { if(data[key]) data[key] = data[key].trim(); });
+
+             return data;
+        }
+        function clearAllSavedData() { if (confirm("⚠️ Are you sure you want to clear ALL saved data?")) { localStorage.removeItem(LOCAL_STORAGE_KEY); allSavedTags.clear(); allSavedNiches.clear(); allSavedEmotions.clear(); allSavedTypes.clear(); loadComparisonData(); updateAllSuggestions(); if(currentVideoData && metricsForm) { resetUIBeforeFetch(); } } }
+
+        // --- Tag/Suggestion Population ---
+        function updateTagSuggestions() { if (!tagsSuggestionsList) return; tagsSuggestionsList.innerHTML = ''; Array.from(allSavedTags).sort((a,b)=>a.toLowerCase().localeCompare(b.toLowerCase())).forEach(tag => { tagsSuggestionsList.insertAdjacentHTML('beforeend', `<option value="${escapeHtml(tag)}"></option>`); }); }
+        function updateAllSuggestions() { updateTagSuggestions(); populateCheckboxGroupsWithSaved(); populateFilterDropdowns(); console.log("Updated suggestions/filters."); }
+        function populateFilterDropdowns() {
+             if (tagFilter) { const current = tagFilter.value; tagFilter.innerHTML = '<option value="all">All Tags</option>'; Array.from(allSavedTags).sort((a,b)=>a.toLowerCase().localeCompare(b.toLowerCase())).forEach(t => tagFilter.insertAdjacentHTML('beforeend', `<option value="${escapeHtml(t)}">${escapeHtml(t)}</option>`)); tagFilter.value = allSavedTags.has(current)?current:'all'; }
+             // TODO: Add Niche/Type Filters
+        }
+
+        // --- Comparison Display ---
+        function loadComparisonData() {
+            const allData = getSavedData(); let videoEntries = Object.values(allData);
+            if (!comparisonTableBody || !noSavedDataMessage || !comparisonContainer || !comparisonTable) return; comparisonTableBody.innerHTML = '';
+            allSavedTags.clear(); allSavedNiches.clear(); allSavedEmotions.clear(); allSavedTypes.clear();
+            const safeAddToSet = (set, items) => (items || []).forEach(item => { if(typeof item === 'string' && item.trim()) set.add(item.trim()) });
+            videoEntries.forEach(e => { safeAddToSet(allSavedTags, e.tags); safeAddToSet(allSavedNiches, e.niches); safeAddToSet(allSavedEmotions, e.emotions); safeAddToSet(allSavedTypes, e.types); });
+            populateFilterDropdowns(); if (currentVideoData) updateAllSuggestions();
+
+            const selectedPlatform = platformFilter ? platformFilter.value : 'all'; const selectedTag = tagFilter ? tagFilter.value : 'all';
+            videoEntries = videoEntries.filter(e => (selectedPlatform==='all'||e.platform===selectedPlatform) && (selectedTag==='all'||(e.tags&&e.tags.map(t=>t.toLowerCase()).includes(selectedTag.toLowerCase()))));
+
+            const hasEntries = videoEntries.length > 0;
+            comparisonContainer.classList.toggle('hidden', !hasEntries); noSavedDataMessage.classList.toggle('hidden', hasEntries); comparisonTable.classList.toggle('hidden', !hasEntries);
+            [clearAllButton, exportCsvButton, showSummaryButton].forEach(btn => { if(btn) { btn.classList.toggle('hidden', !hasEntries); btn.disabled = !hasEntries; } });
+            if (!hasEntries) return;
+
+            videoEntries.sort((a,b) => (b.postDate||'0').localeCompare(a.postDate||'0') || (b.views||0)-(a.views||0));
+            videoEntries.forEach(v => {
+                const r = calculateMetrics(v.views, v.likes, v.comments); const t = escapeHtml(v.title||'N/A'); const n = (v.niches||[]).map(escapeHtml).join(', '); const ty = (v.types||[]).map(escapeHtml).join(', '); const tg = (v.tags||[]).map(t => `<span class="tag-item">${escapeHtml(t)}</span>`).join(' ');
+                comparisonTableBody.insertAdjacentHTML('beforeend', `<tr> <td class="action-cell"><button class="button button-secondary button-small view-details-btn" data-identifier="${escapeHtml(v.identifier||'')}" title="View Full Details">👁️</button></td> <td class="platform-cell">${escapeHtml(v.platform||'N/A')}</td> <td class="title-cell" title="${t}">${t}</td> <td class="username-cell" title="${escapeHtml(v.username||'')}">${escapeHtml(v.username||'N/A')}</td> <td>${escapeHtml(v.postDate||'N/A')}</td> <td class="metric-cell">${formatNumberShorthand(v.views)}</td> <td class="metric-cell">${formatNumberShorthand(v.likes)}</td> <td class="metric-cell">${formatNumberShorthand(v.comments)}</td> <td class="metric-cell">${r.engagementRate.toFixed(2)}</td> <td class="multi-select-cell" title="${n||'N/A'}">${n||'N/A'}</td> <td class="multi-select-cell" title="${ty||'N/A'}">${ty||'N/A'}</td> <td class="tags-cell">${tg||'N/A'}</td> </tr>`);
+            });
+        }
+
+        // --- Details Modal ---
+        function displayVideoDetails(identifier) {
+             if (!identifier || !videoDetailModal || !videoDetailList) return; const allData = getSavedData(); const video = allData[identifier]; if (!video) { showError(`Data not found: ${identifier}`); return; } videoDetailList.innerHTML = '';
+             const detailFields = [ { key: 'title', label: 'Title/Product' }, { key: 'platform', label: 'Platform' }, { key: 'username', label: 'Username' }, { key: 'postDate', label: 'Post Date' }, { key: 'identifier', label: 'Identifier (URL/ID)' }, { key: 'views', label: 'Views', format: formatNumberWithCommas }, { key: 'likes', label: 'Likes', format: formatNumberWithCommas }, { key: 'comments', label: 'Comments', format: formatNumberWithCommas }, { key: 'shares', label: 'Shares', format: formatNumberWithCommas }, { key: 'saves', label: 'Saves', format: formatNumberWithCommas }, { key: 'duration', label: 'Length' }, { key: 'clips', label: 'Clips' }, { key: 'visualHook', label: 'Visual Hook', pre: true }, { key: 'textHook', label: 'Text Hook', pre: true }, { key: 'caption', label: 'Caption', pre: true }, { key: 'tags', label: 'Tags/Hashtags', format: (arr)=>(arr||[]).map(escapeHtml).join(', ') }, { key: 'niches', label: 'Niche(s)', format: (arr)=>(arr||[]).map(escapeHtml).join(', ') }, { key: 'emotions', label: 'Emotion(s)', format: (arr)=>(arr||[]).map(escapeHtml).join(', ') }, { key: 'types', label: 'Type(s)', format: (arr)=>(arr||[]).map(escapeHtml).join(', ') }, { key: 'pace', label: 'Pace', format: (v)=>v?`${v}/5`:'N/A' }, { key: 'controversy', label: 'Controversy Used', pre: true }, { key: 'mostComments', label: 'Most Comments Say', pre: true }, { key: 'whereFilmed', label: 'Where Filmed' }, { key: 'audio', label: 'Audio Name/Link' }, { key: 'recreate', label: 'Can Recreate?', format: (v)=>v?v.charAt(0).toUpperCase()+v.slice(1):'N/A' }, { key: 'equipment', label: 'Special Equipment' }, { key: 'similar', label: 'Similar To' }, { key: 'notes', label: 'Other Notes', pre: true } ];
+             detailFields.forEach(f => { let v=video[f.key], d='N/A', p=!!v; if(Array.isArray(v)&&v.length===0)p=false; if(p){ d = f.format?f.format(v):escapeHtml(v); } const h = f.pre?`<pre>${d}</pre>`:`<span>${d}</span>`; videoDetailList.insertAdjacentHTML('beforeend', `<li><strong>${escapeHtml(f.label)}:</strong> ${h}</li>`); });
+             videoDetailModal.classList.remove('hidden'); requestAnimationFrame(()=>requestAnimationFrame(()=>videoDetailModal.classList.add('visible')));
+        }
+        function closeDetailModal() { if (videoDetailModal) { videoDetailModal.classList.remove('visible'); videoDetailModal.addEventListener('transitionend', ()=>videoDetailModal.classList.add('hidden'), { once: true }); } }
+
+        // --- Summary Modal ---
+        function displaySummary() { const allData=getSavedData(); const entries=Object.values(allData); if(!summaryList) return; summaryList.innerHTML=''; if(entries.length===0){ summaryList.innerHTML='<li>No data available.</li>'; } else { let mv={v:-1,e:null},ml={l:-1,e:null},mc={c:-1,e:null},he={r:-1,e:null}; entries.forEach(e=>{ const v=e.views||0,l=e.likes||0,c=e.comments||0; const{engagementRate}=calculateMetrics(v,l,c); if(v>mv.v)mv={v,e}; if(l>ml.l)ml={l,e}; if(c>mc.c)mc={c,e}; if(engagementRate>he.r&&v>0)he={r:engagementRate,e}; }); const fe=(e)=>e?`<span class="entry-details">(${escapeHtml(e.title||e.username||'?')} / ${e.platform||'?'})</span>`:''; summaryList.innerHTML=`<li><strong>Most Views:</strong> <span>${mv.e?formatNumberShorthand(mv.v):'N/A'} ${fe(mv.e)}</span></li> <li><strong>Most Likes:</strong> <span>${ml.e?formatNumberShorthand(ml.l):'N/A'} ${fe(ml.e)}</span></li> <li><strong>Most Comments:</strong> <span>${mc.e?formatNumberShorthand(mc.c):'N/A'} ${fe(mc.e)}</span></li> <li><strong>Highest Eng. Rate:</strong> <span>${he.e?he.r.toFixed(2)+'%':'N/A'} ${fe(he.e)}</span></li>`; } if(summaryModal){ summaryModal.classList.remove('hidden'); requestAnimationFrame(()=>requestAnimationFrame(()=>summaryModal.classList.add('visible'))); } }
+        function closeSummaryModal() { if(summaryModal) { summaryModal.classList.remove('visible'); summaryModal.addEventListener('transitionend', ()=>summaryModal.classList.add('hidden'), { once: true }); } }
+
+        // --- CSV Export ---
+        function exportDataToCsv() {
+             const allData = getSavedData(); const entries = Object.values(allData); if (entries.length === 0) { alert("No data to export."); return; }
+             const headers = [ "Identifier", "Platform", "Title", "Username", "PostDate", "Views", "Likes", "Comments", "Shares", "Saves", "EngagementRate", "LikeRate", "CommentRate", "Duration", "Clips", "Niches", "Emotions", "Types", "VisualHook", "TextHook", "Caption", "Tags", "Pace", "ControversyUsed", "MostCommentsSay", "WhereFilmed", "Audio", "CanRecreate", "SpecialEquipment", "SimilarTo", "OtherNotes" ];
+             const csvHeader = headers.map(escapeCsvField).join(',') + '\n';
+             let csvRows = entries.map(v => { const r=calculateMetrics(v.views,v.likes,v.comments); const fa=(a)=>(a||[]).map(escapeHtml).join('|'); const rd=[ v.identifier, v.platform, v.title, v.username, v.postDate, v.views, v.likes, v.comments, v.shares, v.saves, r.engagementRate.toFixed(2), r.likeRate.toFixed(2), r.commentRate.toFixed(2), v.duration, v.clips, fa(v.niches), fa(v.emotions), fa(v.types), v.visualHook, v.textHook, v.caption, fa(v.tags), v.pace, v.controversy, v.mostComments, v.whereFilmed, v.audio, v.recreate, v.equipment, v.similar, v.notes ].map(f=>f??''); return rd.map(escapeCsvField).join(','); }).join('\n');
+             const fullCsv=csvHeader+csvRows; const blob=new Blob([`\uFEFF${fullCsv}`],{type:'text/csv;charset=utf-8;'}); const link=document.createElement("a"); if(link.download!==undefined){ const url=URL.createObjectURL(blob); const ts=new Date().toISOString().slice(0,10); link.setAttribute("href",url); link.setAttribute("download",`video_swipe_file_${ts}.csv`); link.style.visibility='hidden'; document.body.appendChild(link); link.click(); document.body.removeChild(link); URL.revokeObjectURL(url); } else { alert("CSV download not supported."); }
+        }
+
+        // --- Utility Functions ---
+                // --- Utility Functions ---
+                function escapeHtml(unsafe) {
+    if (!unsafe && unsafe !== 0) return ""; // Handle 0 correctly
+    return String(unsafe) // Ensure it's a string first
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")  // Corrected this line
+         .replace(/'/g, "&#039;");
+}
+
+        function resetUIBeforeFetch() {
+            if(embedCodeInput) embedCodeInput.value = '';
+            if(videoPlayerContainer) videoPlayerContainer.innerHTML = '<p>Video player loads here...</p>';
+            if(errorMessage) errorMessage.classList.add('hidden');
+            if(embedWarningMessage) embedWarningMessage.classList.add('hidden');
+            if(loadingMessage) loadingMessage.classList.add('hidden');
+            if(saveStatusMessage) saveStatusMessage.classList.add('hidden');
+            if(resultsArea) resultsArea.classList.add('hidden');
+            if(saveDataButton) saveDataButton.disabled = true;
+            if (metricsForm) {
+                metricsForm.reset(); // Reset standard fields
+                setCheckboxValues('niche', []); // Clear checkboxes
+                setCheckboxValues('emotion', []);
+                setCheckboxValues('type', []);
+            }
+            if(currentPlatformInput) currentPlatformInput.value = '';
+            if(currentVideoIdentifierInput) currentVideoIdentifierInput.value = '';
+            if(platformDisplay) platformDisplay.value = ''; // Clear display field
+            currentVideoData = null;
+            if(engagementRateEl) engagementRateEl.textContent="N/A";
+            if(likeRateEl) likeRateEl.textContent="N/A";
+            if(commentRateEl) commentRateEl.textContent="N/A";
+            if (instagramCheckInterval) clearInterval(instagramCheckInterval);
+            console.log("UI Reset");
+        }
+
+        function showLoading(isLoading) {
+            if(loadingMessage) {
+                loadingMessage.className = `message message-loading ${isLoading ? '' : 'hidden'}`;
+                if (isLoading) {
+                    if(errorMessage) errorMessage.classList.add('hidden');
+                    if(embedWarningMessage) embedWarningMessage.classList.add('hidden');
+                }
+            }
+        }
+
+        function showError(message, isEmbedRelated = false) {
+            const el = isEmbedRelated ? embedWarningMessage : errorMessage;
+            if(el) {
+                el.innerHTML = message; // Use innerHTML to allow basic HTML like <strong>
+                el.className = `message ${isEmbedRelated ? 'message-warning' : 'message-error'}`;
+                el.classList.remove('hidden');
+                if(loadingMessage) loadingMessage.classList.add('hidden');
+                // Only hide results area for general errors, not embed warnings
+                if (!isEmbedRelated && resultsArea) {
+                    resultsArea.classList.add('hidden');
+                }
+            }
+        }
+
+        function showEmbedWarning(message) {
+            if(embedWarningMessage) {
+                embedWarningMessage.innerHTML = message; // Use innerHTML
+                embedWarningMessage.className = 'message message-warning';
+                embedWarningMessage.classList.remove('hidden');
+            }
+        }
+
+        function showSaveStatus(message, isError = false) {
+            if(saveStatusMessage) {
+                const statusIcon = isError ? '❌' : '✅';
+                // Use escapeHtml only for the user-provided message part
+                saveStatusMessage.innerHTML = `${statusIcon} ${escapeHtml(message)}`;
+                saveStatusMessage.className = `message ${isError ? 'message-error' : 'message-save-status'}`;
+                // Optional: Add explicit styles, though classes should handle it
+                saveStatusMessage.style.borderColor = isError ? '#fecaca' : '#bbf7d0'; // Tailwind red-200 / green-200
+                saveStatusMessage.style.color = isError ? '#b91c1c' : '#166534'; // Tailwind red-700 / green-700
+                saveStatusMessage.style.backgroundColor = isError ? '#fee2e2' : '#dcfce7'; // Tailwind red-100 / green-100
+
+                saveStatusMessage.classList.remove('hidden');
+                if (!isError) {
+                    setTimeout(() => {
+                        saveStatusMessage.classList.add('hidden');
+                        // Reset class fully after hiding
+                        saveStatusMessage.className = "message message-save-status hidden";
+                    }, 3000);
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>
