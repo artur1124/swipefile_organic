@@ -799,17 +799,103 @@
         function closeSummaryModal() { if(summaryModal) { summaryModal.classList.remove('visible'); summaryModal.addEventListener('transitionend', ()=>summaryModal.classList.add('hidden'), { once: true }); } }
 
         // --- CSV Export ---
-        function exportDataToCsv() {
-             const allData = getSavedData(); const entries = Object.values(allData); if (entries.length === 0) { alert("No data to export."); return; }
-             const headers = [ "Identifier", "Platform", "Title", "Username", "PostDate", "Views", "Likes", "Comments", "Shares", "Saves", "EngagementRate", "LikeRate", "CommentRate", "Duration", "Clips", "Niches", "Emotions", "Types", "VisualHook", "TextHook", "Caption", "Tags", "Pace", "ControversyUsed", "MostCommentsSay", "WhereFilmed", "Audio", "CanRecreate", "SpecialEquipment", "SimilarTo", "OtherNotes" ];
-             const csvHeader = headers.map(escapeCsvField).join(',') + '\n';
-             let csvRows = entries.map(v => { const r=calculateMetrics(v.views,v.likes,v.comments); const fa=(a)=>(a||[]).map(escapeHtml).join('|'); const rd=[ v.identifier, v.platform, v.title, v.username, v.postDate, v.views, v.likes, v.comments, v.shares, v.saves, r.engagementRate.toFixed(2), r.likeRate.toFixed(2), r.commentRate.toFixed(2), v.duration, v.clips, fa(v.niches), fa(v.emotions), fa(v.types), v.visualHook, v.textHook, v.caption, fa(v.tags), v.pace, v.controversy, v.mostComments, v.whereFilmed, v.audio, v.recreate, v.equipment, v.similar, v.notes ].map(f=>f??''); return rd.map(escapeCsvField).join(','); }).join('\n');
-             const fullCsv=csvHeader+csvRows; const blob=new Blob([`\uFEFF${fullCsv}`],{type:'text/csv;charset=utf-8;'}); const link=document.createElement("a"); if(link.download!==undefined){ const url=URL.createObjectURL(blob); const ts=new Date().toISOString().slice(0,10); link.setAttribute("href",url); link.setAttribute("download",`video_swipe_file_${ts}.csv`); link.style.visibility='hidden'; document.body.appendChild(link); link.click(); document.body.removeChild(link); URL.revokeObjectURL(url); } else { alert("CSV download not supported."); }
+                // --- CSV Export (MODIFIED with Logging) ---
+                function exportDataToCsv() {
+            console.log("Export CSV: Function started."); // Log 1
+            const allData = getSavedData();
+            const entries = Object.values(allData);
+            console.log(`Export CSV: Found ${entries.length} entries.`); // Log 2
+
+            if (entries.length === 0) {
+                alert("No data to export.");
+                console.log("Export CSV: Aborted - No data."); // Log 2a
+                return;
+            }
+
+            const headers = [ "Identifier", "Platform", "Title", "Username", "PostDate", "Views", "Likes", "Comments", "Shares", "Saves", "EngagementRate", "LikeRate", "CommentRate", "Duration", "Clips", "Niches", "Emotions", "Types", "VisualHook", "TextHook", "Caption", "Tags", "Pace", "ControversyUsed", "MostCommentsSay", "WhereFilmed", "Audio", "CanRecreate", "SpecialEquipment", "SimilarTo", "OtherNotes" ];
+            const csvHeader = headers.map(escapeCsvField).join(',') + '\n';
+            let csvRows = '';
+
+            try {
+                csvRows = entries.map(v => {
+                    const r=calculateMetrics(v.views,v.likes,v.comments);
+                    const formatArray = (a)=>(a||[]).map(escapeHtml).join('|');
+                    const rowData=[ v.identifier, v.platform, v.title, v.username, v.postDate, v.views, v.likes, v.comments, v.shares, v.saves, r.engagementRate.toFixed(2), r.likeRate.toFixed(2), r.commentRate.toFixed(2), v.duration, v.clips, formatArray(v.niches), formatArray(v.emotions), formatArray(v.types), v.visualHook, v.textHook, v.caption, formatArray(v.tags), v.pace, v.controversy, v.mostComments, v.whereFilmed, v.audio, v.recreate, v.equipment, v.similar, v.notes ].map(f=>f??'');
+                    return rowData.map(escapeCsvField).join(',');
+                }).join('\n');
+                console.log("Export CSV: Rows generated successfully."); // Log 3
+            } catch (error) {
+                console.error("Export CSV: Error generating CSV rows:", error); // Log 3 Error
+                alert("Error creating CSV content. Check console for details.");
+                return;
+            }
+
+            const fullCsv = csvHeader + csvRows;
+            console.log(`Export CSV: Full CSV content created (length: ${fullCsv.length}).`); // Log 4
+
+            let blob;
+            try {
+                // Add BOM for Excel UTF-8 compatibility
+                blob = new Blob([`\uFEFF${fullCsv}`], { type: 'text/csv;charset=utf-8;' });
+                console.log(`Export CSV: Blob created (size: ${blob.size}).`); // Log 5
+            } catch (error) {
+                console.error("Export CSV: Error creating Blob:", error); // Log 5 Error
+                alert("Error preparing CSV file data. Check console for details.");
+                return;
+            }
+
+            const link = document.createElement("a");
+
+            // Check if browser supports the download attribute
+            if (link.download !== undefined) {
+                let url;
+                try {
+                    url = URL.createObjectURL(blob);
+                    console.log("Export CSV: Blob URL created:", url); // Log 6
+                } catch (error) {
+                    console.error("Export CSV: Error creating Blob URL:", error); // Log 6 Error
+                    alert("Error creating download link. Check console for details.");
+                    return;
+                }
+
+                const timestamp = new Date().toISOString().slice(0, 10);
+                const filename = `video_swipe_file_${timestamp}.csv`;
+                link.setAttribute("href", url);
+                link.setAttribute("download", filename);
+                link.style.visibility = 'hidden';
+
+                // Append link to body before clicking
+                document.body.appendChild(link);
+                console.log(`Export CSV: Link appended to body. Attempting click for ${filename}...`); // Log 7
+
+                link.click(); // Trigger the download
+
+                console.log("Export CSV: Click triggered."); // Log 8
+
+                // Clean up: Remove link and revoke URL after a short delay
+                setTimeout(() => {
+                    try {
+                        document.body.removeChild(link);
+                        URL.revokeObjectURL(url);
+                        console.log("Export CSV: Cleanup successful (link removed, URL revoked)."); // Log 9
+                    } catch (error) {
+                        console.warn("Export CSV: Error during cleanup:", error); // Log 9 Error
+                    }
+                }, 100); // 100ms delay before cleanup
+
+            } else {
+                // Fallback for browsers that don't support download attribute
+                console.warn("Export CSV: Download attribute not supported by this browser."); // Log 10
+                alert("CSV download is not fully supported by this browser.");
+                // You could potentially display the CSV content in a new window/textarea as a fallback here.
+                // window.open('data:text/csv;charset=utf-8,' + encodeURIComponent(fullCsv)); // Opens in new tab, might be blocked
+            }
+            console.log("Export CSV: Function finished."); // Log 11
         }
 
         // --- Utility Functions ---
                 // --- Utility Functions ---
-                function escapeHtml(unsafe) {
+            function escapeHtml(unsafe) {
     if (!unsafe && unsafe !== 0) return ""; // Handle 0 correctly
     return String(unsafe) // Ensure it's a string first
          .replace(/&/g, "&amp;")
@@ -818,6 +904,21 @@
          .replace(/"/g, "&quot;")  // Corrected this line
          .replace(/'/g, "&#039;");
 }
+
+function escapeCsvField(fieldValue) {
+            if (fieldValue === null || fieldValue === undefined) {
+                return ''; // Return empty string for null or undefined
+            }
+            const stringValue = String(fieldValue); // Convert to string
+
+            // Check if the field contains comma, double quote, newline, or carriage return
+            if (stringValue.includes(',') || stringValue.includes('"') || stringValue.includes('\n') || stringValue.includes('\r')) {
+                // If it does, wrap the field in double quotes and escape existing double quotes by doubling them
+                return `"${stringValue.replace(/"/g, '""')}"`;
+            }
+            // If no special characters, return the string as is
+            return stringValue;
+        }
 
         function resetUIBeforeFetch() {
             if(embedCodeInput) embedCodeInput.value = '';
